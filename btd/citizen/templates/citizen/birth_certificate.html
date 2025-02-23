@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birth Certificate</title>
+    <link rel="stylesheet" href="{% static 'css/birth_certificate.css' %}">
+</head>
+<body>
+    <div class="certificate-wrapper">
+        <div class="container">
+            <div class="watermark"></div>
+            <h1>Birth Certificate</h1>
+            <h2>{{ applicant.full_name }}</h2>
+            
+            <p><strong>Birth Date:</strong> {{ applicant.birth_date }}</p>
+            <p><strong>Birth Id:</strong> {{ applicant.application_id }}</p>
+            <p><strong>Father's Name:</strong> {{ applicant.father_name }}</p>
+            <p><strong>Mother's Name:</strong> {{ applicant.mother_name }}</p>
+            <p><strong>Religion:</strong> {{ applicant.religion }}</p>
+            <p><strong>Present Address:</strong> {{ applicant.present_address }}</p>
+            <p><strong>Permanent Address:</strong> {{ applicant.permanent_address }}</p>
+            <p><strong>Gender:</strong> {{ applicant.gender }}</p>
+        </div>
+        
+        <button onclick="window.print()" class="print-btn">
+            <i class="fas fa-print"></i> Print Certificate
+        </button>
+    </div>
+</body>
+</html>

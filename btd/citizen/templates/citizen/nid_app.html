@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NID Application</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/nid_application.css' %}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">NID Application Form</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="father_name">Father's Name</label>
+                <input type="text" class="form-control" id="father_name" name="father_name" required>
+            </div>
+            <div class="form-group">
+                <label for="father_nid">Father's NID (optional)</label>
+                <input type="text" class="form-control" id="father_nid" name="father_nid">
+            </div>
+            <div class="form-group">
+                <label for="mother_name">Mother's Name</label>
+                <input type="text" class="form-control" id="mother_name" name="mother_name" required>
+            </div>
+            <div class="form-group">
+                <label for="mother_nid">Mother's NID (optional)</label>
+                <input type="text" class="form-control" id="mother_nid" name="mother_nid">
+            </div>
+            <div class="form-group">
+                <label for="birth_id">Birth ID</label>
+                <input type="text" class="form-control" id="birth_id" name="birth_id" required>
+            </div>
+            <div class="form-group">
+                <label for="birth_date">Date of Birth</label>
+                <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+            </div>
+            <div class="form-group">
+                <label for="birth_place">Birth Place</label>
+                <input type="text" class="form-control" id="birth_place" name="birth_place" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select class="form-control" id="gender" name="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="marital_status">Marital Status</label>
+                <select class="form-control" id="marital_status" name="marital_status" required>
+                    <option value="Married">Married</option>
+                    <option value="Unmarried">Unmarried</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Divorced">Divorced</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="wife_name">Wife Name (Optional)</label>
+                <input type="text" class="form-control" id="wife_name" name="wife_name" >
+            </div>
+
+            <div class="form-group">
+                <label for="husband_name">Husband Name (Optional)</label>
+                <input type="text" class="form-control" id="husband_name" name="husband_name" >
+            </div>
+            
+            <div class="form-group">
+                <label for="occupation">Occupation</label>
+                <input type="text" class="form-control" id="occupation" name="occupation" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Enter Your email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="blood_group">Blood Group</label>
+                <select class="form-control" id="blood_group" name="blood_group" required>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="subdistrict">Subdistrict</label>
+                <select class="form-control" id="subdistrict" name="subdistrict" required>
+                    {% for subdistrict in subdistricts %}
+                    <option value="{{ subdistrict.id }}">{{ subdistrict.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="academic_certificate">Academic Certificate (PDF only, max 5MB)</label>
+                <input type="file" 
+                       class="form-control-file" 
+                       id="academic_certificate" 
+                       name="academic_certificate"
+                       accept=".pdf"
+                       required>
+                <small class="form-text text-muted">
+                    Please upload your latest academic certificate in PDF format.
+                    Maximum file size: 5MB
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

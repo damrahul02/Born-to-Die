@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National ID Card</title>
+    <link rel="stylesheet" href="{% static 'css/nid_template.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="certificate-wrapper">
+        <div class="container">
+            <div class="watermark"></div>
+            <div class="nid-card">
+                <div class="header">
+                    <img src="{% static 'images/image.png' %}" alt="Government Logo" class="govt-logo">
+                    <div class="title">
+                        <h1>People's Republic of Bangladesh</h1>
+                        <h2>National ID Card</h2>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="photo-section">
+                        {% if verification.face_photo %}
+                            <img src="{{ verification.face_photo.url }}" alt="Photo" class="person-photo">
+                        {% else %}
+                            <div class="no-photo">Photo Not Available</div>
+                        {% endif %}
+                    </div>
+                    <div class="info-section">
+                        <div class="info-row">
+                            <span class="label">NID No:</span>
+                            <span class="value">{{ verification.nid_number }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Name:</span>
+                            <span class="value">{{ verification.name }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Father's Name:</span>
+                            <span class="value">{{ verification.father_name }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Mother's Name:</span>
+                            <span class="value">{{ verification.mother_name }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Date of Birth:</span>
+                            <span class="value">{{ verification.birth_date }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Blood Group:</span>
+                            <span class="value">{{ verification.blood_group }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    
+                    <div class="qr-code">
+                        <!-- Add QR code here if needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button onclick="window.print()" class="print-btn">
+                <i class="fas fa-print"></i> Print NID
+            </button>
+            <button onclick="window.history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Add print handler
+        window.onbeforeprint = function() {
+            document.querySelector('.action-buttons').style.display = 'none';
+        };
+        window.onafterprint = function() {
+            document.querySelector('.action-buttons').style.display = 'flex';
+        };
+    </script>
+</body>
+</html>

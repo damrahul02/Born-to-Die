@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Birth Certificate</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/citizen__panel.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+     <style>
+        /* ...existing code... */
+        .footerpart{
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+/* Form Styling */
+.page-wrapper
+{
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    
+}
+.container.mt-5 {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--white-colour);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.container.mt-5 h2 {
+    color: var(--blue-colour);
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    color: var(--text-colur);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--coco-colur);
+    box-shadow: 0 0 0 0.2rem rgba(237, 148, 85, 0.25);
+}
+
+.btn-primary {
+    background-color: var(--coco-colur);
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--light-coco-colur);
+    transform: translateY(-2px);
+}
+
+/* Form Controls */
+
+select.form-control:focus {
+    border-color: var(--coco-colur);
+    box-shadow: 0 0 0 0.2rem rgba(237, 148, 85, 0.25);
+    outline: none;
+}
+
+select.form-control option {
+    padding: 10px;
+    background-color: var(--white-colour);
+    color: var(--text-colur);
+}
+
+select.form-control option:hover,
+select.form-control option:focus {
+    background-color: var(--gray-colour);
+}
+#birth_application_id_group {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+     </style>
+
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="navbar navbar-expand-lg customNav">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'citizen:index' %}">
+                    <img src="{% static 'images/2.png' %}" alt="logo" class="navbar__logo" />
+                </a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ citizen.username }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'citizen:citizen_profile' %}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'citizen:citizen_pass' %}">Change Password</a></li>
+                        <li><a class="dropdown-item" href="{% url 'citizen:citizen_update' %}">Update</a></li>
+                        <li><a class="dropdown-item" href="{% url 'citizen:logout' %}">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container mt-5 page-wrapper">
+            <h2 class="text-center">Check Birth Certificate</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="has_birth_certificate">Do you have a birth certificate on this website?</label>
+                    <select class="form-control" id="has_birth_certificate" name="has_birth_certificate" required>
+                        <option value="">Choose an option</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+                <div class="form-group" id="birth_application_id_group" style="display: none;">
+                    <label for="birth_application_id">Enter your Birth Application ID</label>
+                    <input type="text" class="form-control" id="birth_application_id" name="birth_application_id">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- ======================== Footer Part =========================== -->
+    <footer id="footerpart" class="footerpart">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="footerTopLeft">
+                        <picture>
+                            <img src="{% static 'images/2.png' %}" alt="" class="footer__logo" />
+                        </picture>
+                        <p class="mt-4 text-white footerTopLeft__p">We are always open to discuss and improve your online presence.</p>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="footerRight offset-lg-1">
+                        <h3 class="footerRight__h3 text-white">Let's Digitalize!</h3>
+                        <p class="footerRight__p text-white my-3">“The biggest part of our digital transformation is changing the way we think.” — Simeon Preston.</p>
+                        <div class="icons text-white">
+                            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ======================== Footer Part =========================== -->
+
+    
+   
+    <script>
+        document.getElementById('has_birth_certificate').addEventListener('change', function() {
+            var birthApplicationIdGroup = document.getElementById('birth_application_id_group');
+            if (this.value === 'yes') {
+                birthApplicationIdGroup.style.display = 'block';
+            } else {
+                birthApplicationIdGroup.style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>

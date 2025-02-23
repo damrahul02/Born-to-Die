@@ -1,0 +1,56 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h3>District Admin</h3>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item">
+            <a href="{% url 'citizen:district_dashboard' %}" class="nav-link">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'citizen:manage_police_admins' %}" class="nav-link">
+                <i class="fas fa-user-shield"></i>
+                Manage Police Admins
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'citizen:manage_subdistrict_admins' %}" class="nav-link">
+                <i class="fas fa-users"></i>
+                View Sub-district Admins
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'citizen:district_reports' %}" class="nav-link">
+                <i class="fas fa-chart-bar"></i>
+                Reports
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a href="{% url 'citizen:passport_verification' %}" class="nav-link active">
+                <i class="fas fa-passport"></i>
+                Passport Verification
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'citizen:print_passport_list' %}" class="nav-link active">
+                <i class="fas fa-print"></i>
+                Print Passport
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'citizen:manage_vaccines' %}" class="nav-link">
+                <i class="fas fa-syringe"></i>
+                Manage Vaccines
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'citizen:admin_logout' %}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </li>
+    </ul>
+</div>

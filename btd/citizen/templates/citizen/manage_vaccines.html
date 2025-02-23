@@ -1,0 +1,363 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Vaccines - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <style>
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+          
+            background: #f8f9fa;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: #1a237e;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 500;
+        }
+
+        .vaccine-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .table th {
+            background: #1a237e;
+            color: white;
+        }
+
+        .btn-add {
+            background: #1a237e;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #283593;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .interval-badge {
+            background: #e3f2fd;
+            color: #1a237e;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .no-vaccines {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 70px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+
+        <div class="main-content">
+            <!-- Add Vaccine Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>Add New Vaccine
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form class="vaccine-form" method="POST" action="{% url 'citizen:add_vaccine' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Vaccine Name</label>
+                                <input type="text" class="form-control" name="vaccine_name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Vaccine Code</label>
+                                <input type="text" class="form-control" name="vaccine_code" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Number of Doses</label>
+                                <input type="number" class="form-control" name="doses" min="1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Manufactured Country</label>
+                                <input type="text" class="form-control" name="manufactured_country">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Disease</label>
+                                <input type="text" class="form-control" name="disease">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Storage Temperature</label>
+                                <input type="text" class="form-control" name="storage_temperature">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Time Intervals (days after birth)</label>
+                                <div id="intervalsContainer">
+                                    <div class="input-group mb-2">
+                                        <input type="number" class="form-control" name="intervals[]" min="0" placeholder="Days after birth">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="addInterval()">
+                                    <i class="fas fa-plus"></i> Add Interval
+                                </button>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-add">
+                                    <i class="fas fa-save me-2"></i>Save Vaccine
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Vaccines List -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-syringe me-2"></i>Available Vaccines
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Doses</th>
+                                    <th>Disease</th>
+                                    <th>Country</th>
+                                    <th>Time Intervals</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vaccine in vaccines %}
+                                <tr>
+                                    <td>{{ vaccine.vaccine_name }}</td>
+                                    <td>{{ vaccine.vaccine_code }}</td>
+                                    <td>{{ vaccine.doses }}</td>
+                                    <td>{{ vaccine.disease }}</td>
+                                    <td>{{ vaccine.manufactured_country }}</td>
+                                    <td>
+                                        {% for interval in vaccine.time_intervals %}
+                                            <span class="interval-badge">{{ interval }} days</span>
+                                        {% endfor %}
+                                    </td>
+<td>
+    <form method="POST" style="display: inline;">
+        {% csrf_token %}
+        <button type="button" class="btn btn-sm btn-info" 
+        onclick="editVaccine('{{ vaccine.id }}')">
+    <i class="fas fa-edit"></i>
+</button>
+    </form>
+    <form method="POST" style="display: inline;" 
+          onsubmit="return confirm('Are you sure you want to delete this vaccine?')">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-danger" 
+                formaction="{% url 'citizen:delete_vaccine' vaccine.id %}">
+            <i class="fas fa-trash"></i>
+        </button>
+    </form>
+</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="no-vaccines">
+                                        <i class="fas fa-info-circle me-2"></i>No vaccines available
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add this before </body> -->
+<div class="modal fade" id="editVaccineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Vaccine</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editVaccineForm" method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Vaccine Name</label>
+                            <input type="text" class="form-control" name="vaccine_name" id="edit_vaccine_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Vaccine Code</label>
+                            <input type="text" class="form-control" name="vaccine_code" id="edit_vaccine_code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Number of Doses</label>
+                            <input type="number" class="form-control" name="doses" id="edit_doses" min="1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Manufactured Country</label>
+                            <input type="text" class="form-control" name="manufactured_country" id="edit_manufactured_country">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Disease</label>
+                            <input type="text" class="form-control" name="disease" id="edit_disease">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Storage Temperature</label>
+                            <input type="text" class="form-control" name="storage_temperature" id="edit_storage_temperature">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Time Intervals (days after birth)</label>
+                            <div id="editIntervalsContainer">
+                                <!-- Intervals will be added here -->
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addEditInterval()">
+                                <i class="fas fa-plus"></i> Add Interval
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateVaccine()">Update Vaccine</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+ let currentVaccineId = null;
+    const modal = new bootstrap.Modal(document.getElementById('editVaccineModal'));
+
+    function editVaccine(id) {
+        currentVaccineId = id;
+        fetch(`/citizen/admins/get-vaccine/${id}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const vaccine = data.vaccine;
+                    document.getElementById('edit_vaccine_name').value = vaccine.vaccine_name;
+                    document.getElementById('edit_vaccine_code').value = vaccine.vaccine_code;
+                    document.getElementById('edit_doses').value = vaccine.doses;
+                    document.getElementById('edit_manufactured_country').value = vaccine.manufactured_country;
+                    document.getElementById('edit_disease').value = vaccine.disease;
+                    document.getElementById('edit_storage_temperature').value = vaccine.storage_temperature;
+                    
+                    // Clear and rebuild intervals
+                    const container = document.getElementById('editIntervalsContainer');
+                    container.innerHTML = '';
+                    vaccine.time_intervals.forEach(interval => {
+                        addEditInterval(interval);
+                    });
+                    
+                    modal.show();
+                } else {
+                    alert('Error loading vaccine data');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error loading vaccine data');
+            });
+    }
+
+    function addEditInterval(value = '') {
+        const container = document.getElementById('editIntervalsContainer');
+        const newInput = document.createElement('div');
+        newInput.className = 'input-group mb-2';
+        newInput.innerHTML = `
+            <input type="number" class="form-control" name="intervals[]" 
+                   value="${value}" min="0" placeholder="Days after birth">
+            <button class="btn btn-outline-danger" type="button" 
+                    onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        container.appendChild(newInput);
+    }
+
+    function updateVaccine() {
+        const form = document.getElementById('editVaccineForm');
+        const formData = new FormData(form);
+        
+        fetch(`/citizen/admins/edit-vaccine/${currentVaccineId}/`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                modal.hide();
+                location.reload();
+            } else {
+                alert(data.error || 'Error updating vaccine');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating vaccine');
+        });
+    }
+
+    // Existing addInterval function for the add form
+    function addInterval() {
+        const container = document.getElementById('intervalsContainer');
+        const newInput = document.createElement('div');
+        newInput.className = 'input-group mb-2';
+        newInput.innerHTML = `
+            <input type="number" class="form-control" name="intervals[]" 
+                   min="0" placeholder="Days after birth">
+            <button class="btn btn-outline-danger" type="button" 
+                    onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        container.appendChild(newInput);
+    }
+        
+    </script>
+</body>
+</html>

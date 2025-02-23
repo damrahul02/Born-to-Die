@@ -1,0 +1,238 @@
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/vaccineupdate.css' %}">
+<style>
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+    
+    .toast {
+        min-width: 300px;
+        margin-bottom: 10px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        overflow: hidden;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .toast-header {
+        padding: 12px 15px;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .toast-body {
+        padding: 12px 15px;
+    }
+    
+    .toast.success .toast-header {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .toast.error .toast-header {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .toast-header {
+        padding: 12px 15px;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        line-height: 1;
+        color: #6c757d;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.15s;
+    }
+
+    .close-btn:hover {
+        opacity: 1;
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="toast-container"></div>
+    <div class="page-header">
+        <h2>Update Vaccination Status</h2>
+    </div>
+
+    <div class="search-container">
+        <form method="POST" class="search-form">
+            {% csrf_token %}
+            <div class="search-box">
+                <input type="text" 
+                       name="application_id" 
+                       class="search-input" 
+                       placeholder="Enter Application ID"
+                       required>
+                <button type="submit" name="search" class="search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if searched_baby %}
+    <div class="baby-details">
+        <div class="detail-card">
+            <div class="detail-row">
+                <div class="detail-item">
+                    <label>Baby Name</label>
+                    <span>{{ searched_baby.full_name }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Date of Birth</label>
+                    <span>{{ searched_baby.birth_date|date:'d M Y' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="schedule-card">
+            <h3>Vaccination Schedule</h3>
+            <div class="table-responsive">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Vaccine</th>
+                            <th>Scheduled Date</th>
+                            <th>Status</th>                          
+                            <th>      </th>                          
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for schedule in vaccination_schedule %}
+                        <tr class="schedule-row {% if schedule.status == 'Done' %}completed{% endif %}">
+                            <td>{{ schedule.vaccine_name }}</td>
+                            <td>{{ schedule.scheduled_date|date:'d M Y' }}</td>
+                            <td class="status-cell">{{ schedule.status }}</td>
+                            <td>{{ schedule.given_date|default:'-'|date:'d M Y' }}</td>
+                            <td>
+                                {% if schedule.status != 'Done' %}
+                                <select class="status-select" data-schedule-id="{{ schedule.id }}">
+                                    <option value="Pending" {% if schedule.status == 'Pending' %}selected{% endif %}>
+                                        Pending
+                                    </option>
+                                    <option value="Done" {% if schedule.status == 'Done' %}selected{% endif %}>
+                                        Done
+                                    </option>
+                                </select>
+                                {% else %}
+                                <span class="status-badge completed">Completed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    function showToast(message, type) {
+        const toast = $(`
+            <div class="toast ${type}">
+                <div class="toast-header">
+                    <strong>${type === 'success' ? 'Success' : 'Error'}</strong>
+                    <button type="button" class="btn-close" onclick="$(this).closest('.toast').remove()"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            </div>
+        `);
+        
+        $('.toast-container').append(toast);
+        
+        setTimeout(() => {
+            toast.fadeOut(300, function() {
+                $(this).remove();
+            });
+        }, 3000);
+    }
+
+    $('.status-select').change(function() {
+        const scheduleId = $(this).data('schedule-id');
+        const newStatus = $(this).val();
+        const row = $(this).closest('tr');
+        const today = new Date().toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+
+        $.ajax({
+            url: '{% url "citizen:update_vaccine" %}',
+            method: 'POST',
+            data: {
+                'schedule_id': scheduleId,
+                'status': newStatus,
+                'update_status': true,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    if (newStatus === 'Done') {
+                        row.addClass('completed');
+                        row.find('.status-cell').text('Done');
+                        row.find('.given-date').text(today);
+                        row.find('td:last').html('<span class="status-badge completed">Completed</span>');
+                        showToast('Vaccine status updated successfully', 'success');
+                    }
+                } else {
+                    showToast(response.message, 'error');
+                }
+            },
+            error: function() {
+                showToast('Error updating vaccination status', 'error');
+            }
+        });
+    });
+
+    // Show initial messages as toasts if any
+   
+});
+
+</script>
+{% endblock %}

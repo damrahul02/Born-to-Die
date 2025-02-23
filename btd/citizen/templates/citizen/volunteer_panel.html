@@ -1,0 +1,66 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/volenteer__panel.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg customNav">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'citizen:index' %}">
+                <img src="{% static 'images/2.png' %}" alt="logo" class="navbar__logo">
+            </a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                    {{ volunteer.name }}
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'citizen:volunteer_profile' %}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'citizen:logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="servicepart">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h3 class="servicepart__heading__h3">Welcome to Your dashboard</h3>
+                </div>
+            </div>
+
+            <div class="row mt-2 gy-4 d-flex justify-content-center">
+                <div class="col-lg-4">
+                    <a href="{% url 'citizen:update_vaccine' %}">
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-user-pen serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Update</h3>
+                            <p class="serviceitem__p">Change the vaccination status after giving vaccine.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                    <a href="{% url 'citizen:monthly_report' %}">
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-file-spreadsheet serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Monthly Report</h3>
+                            <p class="serviceitem__p">Submit the number of new born babies and deaths of the month.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

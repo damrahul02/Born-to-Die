@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search NID - Police Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #283593;
+            --accent-color: #3949ab;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #e53935;
+            --text-light: #ffffff;
+            --text-dark: #212121;
+            --border-color: #e0e0e0;
+        }
+    
+        /* Layout */
+        body {
+            background-color: #f5f6fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .sidebar {
+        width: 280px;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+        color: var(--text-light);
+        padding: 1.5rem;
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.5rem;
+    }
+
+    .sidebar-header h3 {
+        color: var(--text-light);
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+        transform: translateX(5px);
+    }
+
+    .nav-link.active {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--text-light);
+    }
+
+    .nav-link i {
+        width: 20px;
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+    
+        /* Content Header */
+        .content-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            padding: 1.5rem 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    
+        /* Search Container */
+        .search-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+    
+        .search-container:hover {
+            transform: translateY(-5px);
+        }
+    
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+    
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            height: 55px;
+            border-radius: 30px;
+            border: 2px solid var(--border-color);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+    
+        .search-box input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(41, 98, 255, 0.1);
+            outline: none;
+        }
+    
+        .search-box i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.2rem;
+        }
+        .user-profile {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .user-profile img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-info h6 {
+        margin: 0;
+        color: var(--text-light);
+        font-weight: 600;
+    }
+
+    .user-info span {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+        /* Result Card */
+        .result-card {
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: none;
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+    
+        /* Profile Image */
+        .profile-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+    
+        .profile-img:hover {
+            transform: scale(1.05);
+        }
+    
+        /* Information Styling */
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    
+        .info-value {
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+    
+        /* Verification Badge */
+        .verification-badge {
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+    
+        .verified {
+            background-color: var(--success-color);
+            color: white;
+        }
+    
+        .pending {
+            background-color: var(--warning-color);
+            color: white;
+        }
+    
+        /* Alert Styling */
+        .alert {
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            font-weight: 500;
+        }
+    
+        .alert i {
+            margin-right: 0.5rem;
+        }
+    
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+    
+            .search-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+    
+            .result-card {
+                padding: 1.5rem;
+            }
+    
+            .info-value {
+                font-size: 1rem;
+            }
+    
+            .profile-img {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    
+        /* Print Styles */
+        @media print {
+            .sidebar, .search-box {
+                display: none;
+            }
+    
+            .main-content {
+                margin: 0;
+                padding: 0;
+            }
+    
+            .result-card {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'citizen/sidebar_police.html' %}
+
+    <div class="main-content">
+        <div class="content-header">
+            <h2 class="mb-0"><i class="fas fa-search me-2"></i>Search NID</h2>
+        </div>
+
+        <div class="search-container">
+            <form method="GET" class="search-box">
+                <i class="fas fa-id-card"></i>
+                <input type="text" 
+                       name="nid" 
+                       class="form-control" 
+                       placeholder="Enter NID number..."
+                       value="{{ search_query }}"
+                       required>
+            </form>
+
+            {% if result %}
+            <div class="result-card">
+                <div class="text-center">
+                    {% if result.face_photo %}
+                    <img src="{{ result.face_photo.url }}" alt="Profile Photo" class="profile-img">
+                    {% else %}
+                    <i class="fas fa-user-circle fa-6x text-muted"></i>
+                    {% endif %}
+                    <h3 class="mt-3">{{ result.name }}</h3>
+                    <span class="verification-badge {% if result.verification_status == 'verified' %}verified{% else %}pending{% endif %}">
+                        {{ result.verification_status|title }}
+                    </span>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="info-label">NID Number</div>
+                        <div class="info-value">{{ result.nid_number }}</div>
+
+                        <div class="info-label">Father's Name</div>
+                        <div class="info-value">{{ result.father_name }}</div>
+
+                        <div class="info-label">Mother's Name</div>
+                        <div class="info-value">{{ result.mother_name }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-label">Date of Birth</div>
+                        <div class="info-value">{{ result.birth_date }}</div>
+
+                        <div class="info-label">Blood Group</div>
+                        <div class="info-value">{{ result.blood_group }}</div>
+
+                        <div class="info-label">Verification Date</div>
+                        <div class="info-value">{{ result.verification_date }}</div>
+                    </div>
+                </div>
+            </div>
+            {% elif search_performed %}
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                No NID found with the provided number.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

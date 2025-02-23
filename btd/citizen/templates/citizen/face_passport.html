@@ -1,0 +1,196 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passport Face Verification</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .camera-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .user-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+
+        #video {
+            width: 100%;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        #canvas {
+            display: none;
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            margin: 0 5px;
+        }
+
+        .preview-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #preview {
+            max-width: 320px;
+            border-radius: 4px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="camera-container">
+            <h2 class="text-center mb-4">Passport Face Verification</h2>
+
+            <!-- User Information -->
+            <div class="user-info">
+                <h5>Applicant Details</h5>
+                <p><strong>Name:</strong> {{ verification.application.name_en }}</p>
+                <p><strong>Tracking Number:</strong> {{ verification.application.tracking_number }}</p>
+            </div>
+
+            <!-- Camera Feed -->
+            <div class="camera-feed">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <!-- Preview -->
+            <div class="preview-container" id="previewContainer">
+                <h5>Preview</h5>
+                <img id="preview" src="" alt="Captured photo">
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button id="captureBtn" class="btn btn-primary">
+                    <i class="fas fa-camera"></i> Capture Photo
+                </button>
+                <button id="retakeBtn" class="btn btn-secondary" style="display:none;">
+                    <i class="fas fa-redo"></i> Retake
+                </button>
+                <button id="saveBtn" class="btn btn-success" style="display:none;">
+                    <i class="fas fa-save"></i> Save & Complete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let stream = null;
+        const verificationId = '{{ verification.id }}';
+
+        // Initialize camera
+        async function initCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: "user"
+                    } 
+                });
+                document.getElementById('video').srcObject = stream;
+            } catch (err) {
+                console.error("Error accessing camera:", err);
+                alert("Could not access camera. Please make sure you've granted camera permissions.");
+            }
+        }
+
+        initCamera();
+
+        // Capture photo
+        document.getElementById('captureBtn').addEventListener('click', function() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const preview = document.getElementById('preview');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            preview.src = canvas.toDataURL('image/jpeg');
+            document.getElementById('previewContainer').style.display = 'block';
+            video.style.display = 'none';
+            
+            this.style.display = 'none';
+            document.getElementById('retakeBtn').style.display = 'inline-block';
+            document.getElementById('saveBtn').style.display = 'inline-block';
+        });
+
+        // Retake photo
+        document.getElementById('retakeBtn').addEventListener('click', function() {
+            const video = document.getElementById('video');
+            document.getElementById('previewContainer').style.display = 'none';
+            video.style.display = 'block';
+            
+            this.style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'none';
+            document.getElementById('captureBtn').style.display = 'inline-block';
+        });
+
+        // Save photo
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            const canvas = document.getElementById('canvas');
+            
+            canvas.toBlob(function(blob) {
+                const formData = new FormData();
+                formData.append('face_photo', blob, 'face.jpg');
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                
+                fetch('{% url "citizen:update_passport_face_photo" verification.id %}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Face photo updated successfully!');
+                        window.opener.location.reload();
+                        window.close();
+                    } else {
+                        alert('Error saving photo: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }, 'image/jpeg', 0.8);
+        });
+
+        // Cleanup on window close
+        window.addEventListener('beforeunload', function() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .passport-page {
+            width: 125mm;
+            height: 88mm;
+            margin: 0 auto;
+            padding: 10mm;
+            position: relative;
+            background-color: #fff;
+        }
+        .passport-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .passport-header img {
+            height: 50px;
+            margin-bottom: 10px;
+        }
+        .passport-details {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .passport-photo {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            width: 35mm;
+            height: 45mm;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 45mm;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.1;
+            font-size: 48px;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="passport-page">
+        <div class="watermark">BANGLADESH</div>
+        <div class="passport-header">
+            <img src="file://{{ STATIC_ROOT }}/images/bd_logo.png" alt="Bangladesh Logo">
+            <h4>People's Republic of Bangladesh</h4>
+            <h3>PASSPORT</h3>
+        </div>
+        <div class="passport-details">
+            <p><strong>Passport No:</strong> {{ verification.passport_number }}</p>
+            <p><strong>Type:</strong> {{ verification.application.passport_type }}</p>
+            <p><strong>Name:</strong> {{ verification.application.name_en }}</p>
+            <p><strong>Date of Birth:</strong> {{ verification.application.birth_date|date:"d M Y" }}</p>
+            <p><strong>Place of Birth:</strong> {{ verification.application.birth_district }}</p>
+            <p><strong>Nationality:</strong> BANGLADESHI</p>
+            <p><strong>Issue Date:</strong> {{ verification.verification_date|date:"d M Y" }}</p>
+            <p><strong>Expiry Date:</strong> {{ verification.expiry_date|date:"d M Y" }}</p>
+        </div>
+        <div class="passport-photo">
+            Photo
+        </div>
+    </div>
+</body>
+</html> 

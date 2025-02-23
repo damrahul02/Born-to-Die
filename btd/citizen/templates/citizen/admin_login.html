@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #1E88E5;
+            --background-light: #f9f9f9;
+            --text-light: #333;
+            --background-dark: #1e1e2f;
+            --text-dark: #f1f1f1;
+        }
+
+        body.light-mode {
+            background: var(--background-light);
+            color: var(--text-light);
+        }
+
+        body.dark-mode {
+            background: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .login-container {
+            max-width: 400px;
+            width: 90%;
+            padding: 2rem;
+            border-radius: 10px;
+            background: var(--background-light);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+        }
+
+        .login-container.dark-mode {
+            background: var(--background-dark);
+        }
+
+        .login-title {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
+            border-color: var(--primary-color);
+        }
+
+        .custom-select {
+            border-radius: 8px;
+        }
+
+        .login-btn {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            width: 100%;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .login-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .dark-mode-toggle {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
+    <div class="login-container">
+        <h3 class="login-title">Admin Login</h3>
+        <form id="adminLoginForm" method="POST" action="{% url 'citizen:admin_login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <select class="form-select custom-select" id="role" name="role" required>
+                    <option value="">Select Role</option>
+
+                    <option value="District">District Admin</option>
+                    <option value="Sub district">Subdistrict Admin</option>
+                    <option value="Police">Police Admin</option>
+                </select>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+    </div>
+
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        const loginContainer = document.querySelector('.login-container');
+        
+        const savedMode = localStorage.getItem('theme');
+        if (savedMode === 'dark') {
+            body.classList.replace('light-mode', 'dark-mode');
+            loginContainer.classList.add('dark-mode');
+            darkModeToggle.textContent = '☀️';
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+            loginContainer.classList.toggle('dark-mode');
+
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                darkModeToggle.textContent = '☀️';
+            } else {
+                localStorage.setItem('theme', 'light');
+                darkModeToggle.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+</html>

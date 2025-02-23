@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-thin.css" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-regular.css" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-light.css" />
+
+    <!-- Font link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="{% static 'css/notification.css' %}" />
+    <link rel="shortcut icon" href="./images/icons8-good-quality-48.png" type="image/x-icon" />
+
+    <title>Notification</title>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg customNav">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'citizen:index' %}">
+                <img src="{% static 'images/2.png' %}" alt="logo" class="navbar__logo" />
+            </a>
+            <div class="btn-group">
+                
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'citizen:citizen_profile' %}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'citizen:citizen_pass' %}">Change Password</a></li>
+                    <li><a class="dropdown-item" href="{% url 'citizen:citizen_update' %}">Update</a></li>
+                    <li><a class="dropdown-item" href="{% url 'citizen:logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section id="servicepart">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center">
+                        <h3 class="servicepart__heading__h3">Get all
+                            Notification's Here !</h3>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="text-center my-4">Vaccination Notifications</h1>
+            <form method="POST" class="mb-4">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="applicant">Select Applicant:</label>
+                    <select name="applicant" id="applicant" class="form-control" required>
+                        <option value="">--Select an Applicant--</option>
+                        {% for applicant in applicants %}
+                        <option value="{{ applicant.application_id }}" {% if selected_applicant_id == applicant.application_id %}selected{% endif %}>
+                            {{ applicant.full_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Fetch Vaccination Schedule</button>
+            </form>
+
+            <div class="row mt-3">
+                <div class="col-lg-12">
+                    <div class="vaccine__table">
+                        <h2 class="text-center py-4">Vaccination
+                            Schedule</h2>
+                        <div class="table-responsive">
+                        {% if vaccine_details %}
+                            <h2 class="text-center py-4">Vaccination Schedule for {{ selected_applicant_id }}</h2>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-bordered vaccine__item">
+                                    <thead>
+                                        <tr>
+                                            <th>Vaccine ID</th>
+                                            <th>Vaccine Name</th>
+                                            <th>Dose Number</th>
+                                            <th>Scheduled Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for detail in vaccine_details %}
+                                        <tr>
+                                            <td>{{ detail.vaccine_id }}</td>
+                                            <td>{{ detail.vaccine_name }}</td>
+                                            <td>{{ detail.dose_number }}</td>
+                                            <td>{{ detail.scheduled_date }}</td>
+                                            <td>{{ detail.status }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-center">No vaccination schedule available for the selected applicant.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footerpart">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="footerTopLeft">
+                        <picture>
+                            <img src="{% static 'images/2.png' %}" alt="logo" class="footer__logo" />
+                        </picture>
+                        <p class="mt-4 text-white footerTopLeft__p">We are always open to discuss and improve your
+                            online presence.</p>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="footerRight offset-lg-1">
+                        <h3 class="footerRight__h3 text-white">Lets Digitalize!</h3>
+                        <p class="footerRight__p text-white my-3">"The biggest part of our digital transformation is
+                            changing the way we think." — Simeon Preston.</p>
+                        <div class="icons text-white">
+                            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+

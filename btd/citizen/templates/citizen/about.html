@@ -1,0 +1,257 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{% static 'css/citizen__panel.css' %}" />
+    <link rel="shortcut icon" href="{% static 'css/images/icons8-good-quality-48.png' %}" type="image/x-icon" />
+    <title>About Us - BornToDie</title>
+    <style>
+        .about-hero {
+            background: linear-gradient(rgba(26, 35, 126, 0.9), rgba(26, 35, 126, 0.9)),
+                        url('{% static "images/about-bg.jpg" %}') center/cover;
+            padding: 120px 0;
+            color: white;
+        }
+
+        .about-stats {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+
+        .mission-section {
+            padding: 80px 0;
+        }
+
+        .mission-card {
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .mission-icon {
+            font-size: 2.5rem;
+            color: #1a237e;
+            margin-bottom: 20px;
+        }
+
+        .timeline-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 20px;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .timeline-year {
+            color: #1a237e;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .team-section {
+            padding: 80px 0;
+        }
+
+        .team-member {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .social-links a {
+            color: #1a237e;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #283593;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include your existing navbar -->
+    <nav class="navbar navbar-expand-lg customNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'citizen:index' %}">
+                <picture>
+                    <img src="{% static 'css/images/1.png' %}" alt="logo" class="navbar__logo" />
+                </picture>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                
+            </button>
+
+            <div class="collapse navbar-collapse text-end" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="customItem" aria-current="page" href="{% url 'citizen:index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="customItem" aria-current="page" href="{% url 'citizen:about' %}">About us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="customItem" aria-current="page" href="#faq">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="custombtn" aria-current="page" href="{% url 'citizen:citizen_login' %}">Citizen</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="custombtn" aria-current="page" href="{% url 'citizen:volunteer_login' %}">Volunteer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="custombtn" aria-current="page" href="{% url 'citizen:admin_login' %}">Admin</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 mb-4">Transforming Public Services</h1>
+                    <p class="lead">We're on a mission to digitalize government services and make them accessible to everyone.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="about-stats">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">1M+</div>
+                        <div class="stat-label">Citizens Served</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Healthcare Centers</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="mission-card">
+                        <i class="fas fa-bullseye mission-icon"></i>
+                        <h3>Our Mission</h3>
+                        <p>To provide efficient and accessible digital government services to every citizen.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mission-card">
+                        <i class="fas fa-eye mission-icon"></i>
+                        <h3>Our Vision</h3>
+                        <p>To become the leading platform for digital government services in Bangladesh.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mission-card">
+                        <i class="fas fa-heart mission-icon"></i>
+                        <h3>Our Values</h3>
+                        <p>Transparency, efficiency, and accessibility guide everything we do.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Journey</h2>
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="timeline-item">
+                        <div class="timeline-year">2024</div>
+                        <h4>Platform Launch</h4>
+                        <p>Launched our comprehensive digital service platform.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2023</div>
+                        <h4>Development Phase</h4>
+                        <p>Started development of the digital platform.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2022</div>
+                        <h4>Project Inception</h4>
+                        <p>Conceptualized the idea of digitalizing government services.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Include your existing footer -->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!-- btd/citizen/templates/citizen/citizen_panel.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{% static 'css/citizen__panel.css' %}" />
+    <link rel="shortcut icon" href="{% static 'images/icons8-good-quality-48.png' %}" type="image/x-icon" />
+    <title>Citizen Panel</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg customNav">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'citizen:index' %}">
+                <img src="{% static 'images/2.png' %}" alt="logo" class="navbar__logo" />
+            </a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ citizen.username }}
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'citizen:citizen_pass' %}">Change Password</a></li>
+                    <li><a class="dropdown-item" href="{% url 'citizen:citizen_update' %}">Update</a></li>
+                    <li><a class="dropdown-item" href="{% url 'citizen:logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="servicepart">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center">
+                        <h3 class="servicepart__heading__h3">Welcome to Your dashboard, {{ citizen.username }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="alert alert-warning text-center mt-3" role="alert">
+                        <h4 class="fs-6 lh-base">"The registration is only for new-born babies who are going to be vaccinated soon. So use the information about the baby.!"</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2 gy-4">
+                <div class="col-lg-4">
+                    
+                    <a href="{% url 'citizen:register_vaccine_part1' %}" target="_blank"> 
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-user-pen serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Registration</h3>
+                            <p class="serviceitem__p">Fill out your registration form with accurate information.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                   
+                    <a href="{% url 'citizen:notification' %}" target="_blank"> 
+                        <div class="serviceitem">
+                            <i class="fa-sharp fa-solid fa-bell fa-shake serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Notification</h3>
+                            <p class="serviceitem__p">Check the next date and the number of vaccinations that have been finished.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                   
+                    <a href="{% url 'citizen:generate_birth_certificate' %}"> 
+                        <div class="serviceitem">
+                            <i class="fa-sharp fa-solid fa-file-certificate serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Birth Certificate</h3>
+                            <p class="serviceitem__p">Obtain your automatically generated birth certificate</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                    
+                    <a href="{% url 'citizen:check_birth_certificate' %} "> 
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-id-card serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">National Id Card</h3>
+                            <p class="serviceitem__p">Get your NID automatically after eighteen years!</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                    <a href="{% url 'citizen:passport_application' %} "> 
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-passport serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Passport</h3>
+                            <p class="serviceitem__p">Take only a few steps to obtain your passport.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                    <a href="{% url 'citizen:allowance_application' %} ">
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-person-cane serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Allowance</h3>
+                            <p class="serviceitem__p">Learn everything there is to know about old age benefits.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                    <a href="{% url 'citizen:pay_fees' %} ">
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-money-bill serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Pay Passport Fees</h3>
+                            <p class="serviceitem__p">Pay your passport application fees online.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                    <a href="{% url 'citizen:download_nid' %}">
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-money-bill serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">download your nid</h3>
+                            <p class="serviceitem__p"></p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                    <a href="{% url 'citizen:track_status' %}">
+                        <div class="serviceitem">
+                            <i class="fa-solid fa-magnifying-glass-location serviceitem__icon"></i>
+                            <h3 class="py-3 serviceitem__h3">Track Status</h3>
+                            <p class="serviceitem__p">Track your NID or Passport application status</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+         
+
+            <!-- Add this where you want to display the passport applications -->
+            <!-- {% if passport_applications %}
+            <div class="passport-applications">
+                <h3>Your Passport Applications</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tracking Number</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Applied Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in passport_applications %}
+                        <tr>
+                            <td>{{ app.tracking_number }}</td>
+                            <td>{{ app.name_en }}</td>
+                            <td>{{ app.application_status }}</td>
+                            <td>{{ app.created_at|date:"d M Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div> -->
+    </section>
+
+    <footer id="footerpart">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="footerTopLeft">
+                        <img src="{% static 'images/2.png' %}" alt class="footer__logo" />
+                        <p class="mt-4 text-white footerTopLeft__p">We are always open to discuss and improve your online presence.</p>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="footerRight offset-lg-1">
+                        <h3 class="footerRight__h3 text-white">Let's Digitalize!</h3>
+                        <p class="footerRight__p text-white my-3">“The biggest part of our digital transformation is changing the way we think.” — Simeon Preston.</p>
+                        <div class="icons text-white">
+                            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

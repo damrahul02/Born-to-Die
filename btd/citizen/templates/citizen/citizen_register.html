@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{% static 'css/citizen__register.css' %}" />
+    <link rel="shortcut icon" href="{% static 'images/icons8-good-quality-48.png' %}" type="image/x-icon" />
+    <title>Register - Citizen</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg customNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'citizen:index' %}">
+                <img src="{% static 'images/2.png' %}" alt="logo" class="navbar__logo" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse text-end" id="navbarSupportedContent">
+                <form class="d-flex ms-auto" role="search">
+                    <a href="{% url 'citizen:citizen_login' %}" class="custombtn">Log in</a>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <section id="login__part">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 move__center">
+                    <div class="main">
+                        <img src="{% static 'images/interaction.png' %}" alt class="login__img" />
+                        <form action="{% url 'citizen:citizen_register' %}" method="POST" class="mt-4">
+                            {% csrf_token %}
+                            <div class="input-with-icon">
+                                <input type="text" id="first" name="name" placeholder="Enter your Name" required />
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="input-with-icon">
+                                <input type="text" id="second" name="username" placeholder="Enter your Username" required />
+                                <i class="fa-light fa-signature"></i>
+                            </div>
+                            <div class="input-with-icon">
+                                <input type="email" id="email" name="email" placeholder="Enter your Email" required />
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div class="input-with-icon">
+                                <input type="password" id="pass" name="password" placeholder="Enter your Password" required />
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <div class="wrap">
+                                <button class="custombtn register-btn" type="submit">Register</button>
+                            </div>
+                        </form>
+                        <p>
+                            Registered?
+                            <a href="{% url 'citizen:citizen_login' %}" style="text-decoration: none;">Log in</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="footerpart">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="footerTopLeft">
+                        <img src="{% static 'images/2.png' %}" alt class="footer__logo" />
+                        <p class="mt-4 text-white footerTopLeft__p">We are always open to discuss and improve your online presence.</p>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="footerRight offset-lg-1">
+                        <h3 class="footerRight__h3 text-white">Let's Digitalize!</h3>
+                        <p class="footerRight__p text-white my-3">“The biggest part of our digital transformation is changing the way we think.” — Simeon Preston.</p>
+                        <div class="icons text-white">
+                            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

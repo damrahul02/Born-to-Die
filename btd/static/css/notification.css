@@ -1,0 +1,198 @@
+/* Resetting default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f4f6fc;
+}
+
+/* Global Typography */
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+/* Links */
+a {
+    text-decoration: none;
+}
+
+:root {
+    --blue-colour: #1c1e53;
+    --gray-colour: #f4f6fc;
+    --text-colur: #282938;
+    --white-colour: #ffffff;
+    --yellow-colour: #fcd980;
+    --coco-colur: #ed9455;
+    --light-coco-colur: #ffbb70;
+    --more-light-coco-colur: #ffec9e;
+}
+
+/* Navbar CSS */
+.customNav {
+    padding: 0;
+    background-color: var(--blue-colour);
+    align-items: center;
+}
+
+.navbar__logo {
+    width: 300px;
+    height: auto;
+    text-align: left;
+}
+
+/* Main content area */
+#servicepart {
+    padding: 50px 0;
+    background-image: url(../images/istockphoto-1320330053-1024x1024.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.servicepart__heading__h3 {
+    font-weight: 600;
+    font-size: 48px;
+    padding: 20px 0;
+    color: var(--text-colur);
+}
+
+/* Form styles */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+button[type="submit"] {
+    background-color: var(--blue-colour);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #161741;
+}
+
+/* Table styles */
+.vaccine__table {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.vaccine__table h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--text-colur);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.vaccine__item {
+    background-color: var(--light-coco-colur);
+}
+
+.vaccine__table th,
+.vaccine__table td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 12px;
+    vertical-align: middle;
+}
+
+.vaccine__table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.vaccine__table td.fw-bold {
+    font-weight: bold;
+}
+
+/* Footer styles */
+#footerpart {
+    background-color: var(--blue-colour);
+    padding: 50px 50px 30px 50px;
+}
+
+.footer__logo {
+    height: 100px;
+}
+
+.footerTopLeft__p {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+}
+
+.footerRight__h3 {
+    font-size: 48px;
+    font-weight: 600;
+    color: white;
+}
+
+.footerRight__p {
+    font-size: 16px;
+    font-weight: 400;
+    color: white;
+}
+
+.icons {
+    margin-top: 10px;
+}
+
+.icons a {
+    padding: 10px;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .servicepart__heading__h3 {
+        font-size: 36px;
+    }
+
+    .navbar__logo {
+        width: 200px;
+    }
+
+    #footerpart {
+        padding: 30px 20px;
+    }
+
+    .footerRight__h3 {
+        font-size: 36px;
+    }
+}

@@ -1,0 +1,49 @@
+   /* Sidebar Styles */
+   .sidebar {
+    width: 280px;
+    background: var(--primary-color);
+    padding: 2rem 1rem;
+    color: var(--text-light);
+}
+
+.sidebar-header {
+    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 1rem 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin: 0.8rem 0;
+}
+
+.nav-link {
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: var(--secondary-color);
+    color: var(--text-light);
+}
+
+.nav-link i {
+    margin-right: 0.8rem;
+    font-size: 1.1rem;
+}

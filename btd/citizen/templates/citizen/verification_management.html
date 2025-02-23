@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NID Verification Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+
+.face-thumbnail {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 2px solid #dee2e6;
+        transition: transform 0.2s;
+    }
+
+    .face-thumbnail:hover {
+        transform: scale(1.1);
+    }
+
+    .image-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.9);
+        z-index: 1050;
+        cursor: pointer;
+    }
+
+    .image-modal img {
+        max-width: 90%;
+        max-height: 90vh;
+        margin: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 3px solid white;
+        border-radius: 4px;
+    }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>NID Verification Management</h2>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Verification Date</th>
+                        <th>Fingerprint Status</th>
+                        <th>Face Status</th>
+                        <th>NID Number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for verification in verifications %}
+                    <tr>
+                        <td>{{ verification.user_id }}</td>
+                        <td>{{ verification.name }}</td>
+                        <td>{{ verification.verification_date }}</td>
+                        <td>
+                            <span class="badge {% if verification.fingerprint_status == 'completed' %}badge-success{% else %}badge-warning{% endif %}">
+                                {{ verification.fingerprint_status }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="badge {% if verification.face_status == 'completed' %}badge-success{% else %}badge-warning{% endif %} mr-2">
+                                    {{ verification.face_status }}
+                                </span>
+                                {% if verification.face_photo %}
+                                <div class="position-relative">
+                                    <img src="{{ verification.face_photo.url }}" 
+                                         class="face-thumbnail" 
+                                         alt="Face Photo"
+                                         onclick="showFullImage(this.src)"
+                                         style="cursor: pointer;">
+                                </div>
+                                {% else %}
+                                <span class="text-muted">No photo</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>{{ verification.nid_number|default:"Pending" }}</td>
+                        <td>
+                            {% if verification.fingerprint_status != 'completed' %}
+                            <form method="POST" action="{% url 'citizen:update_verification_status' verification.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="type" value="fingerprint">
+                                <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Are you sure you want to update fingerprint status?')">
+                                    Update Fingerprint
+                                </button>
+                            </form>
+                            {% endif %}
+
+                            {% if verification.face_status != 'completed' %}
+                            <a href="{% url 'citizen:face_verification' verification.id %}" class="btn btn-sm btn-info" target="_blank">
+                                <i class="fas fa-camera"></i> Update Face
+                            </a>
+                            {% endif %}
+
+                            {% if verification.fingerprint_status == 'completed' and verification.face_status == 'completed' and not verification.nid_number %}
+                            <form method="POST" action="{% url 'citizen:generate_nid' verification.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Are you sure you want to generate NID?')">
+                                    Generate NID
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+       
+
+        function updateStatus(id, type) {
+            if (confirm('Are you sure you want to update ' + type + ' status?')) {
+                fetch(`/admins/sub-district/verification/${id}/update-status/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ type: type })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error updating status: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating status. Please try again.');
+                });
+            }
+        }
+
+        function generateNID(id) {
+            if (confirm('Are you sure you want to generate NID?')) {
+                fetch(`/admins/sub-district/verification/${id}/generate-nid/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        let message = `NID Generated: ${data.nid_number}`;
+                        if (data.warning) {
+                            message += `\n${data.warning}`;
+                        }
+                        alert(message);
+                        location.reload();
+                    } else {
+                        alert('Error generating NID: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error generating NID. Please try again.');
+                });
+            }
+        }
+        function showFullImage(src) {
+        const modal = document.getElementById('imageModal');
+        const fullSizeImage = document.getElementById('fullSizeImage');
+        fullSizeImage.src = src;
+        modal.style.display = 'block';
+    }
+
+    // Close modal when pressing escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+    });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <div id="imageModal" class="image-modal" onclick="this.style.display='none'">
+        <img id="fullSizeImage" src="" alt="Full size image">
+    </div>
+</body>
+</html> 

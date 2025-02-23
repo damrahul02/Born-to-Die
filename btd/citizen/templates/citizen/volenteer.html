@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Login</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/voleenteer.css' %}" />
+</head>
+<body>
+    <!-- Warning Message -->
+    <div id="warning-message" class="text-center">You are in Volunteer Mode!</div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg customNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'images/2.png' %}" alt="logo" class="navbar__logo" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section id="login__part">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="main">
+                        <img src="{% static 'images/setting.png' %}" alt="login" class="login__img" />
+                        <form method="POST" action="{% url 'citizen:volunteer_login' %}" class="mt-4">
+                            {% csrf_token %}
+                            <div class="input-with-icon">
+                                <input type="text" name="email" placeholder="Enter your email" required />
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="input-with-icon">
+                                <input type="password" name="password" placeholder="Enter your Password" required />
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <div class="wrap">
+                                <button class="custombtn register-btn" type="submit">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footerpart">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="footerTopLeft">
+                        <img src="{% static 'images/2.png' %}" alt="logo" class="footer__logo" />
+                        <p class="mt-4 text-white">We are always open to discuss and improve your online presence.</p>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <h3 class="text-white">Let's Digitalize!</h3>
+                    <p class="my-3 text-white">“The biggest part of our digital transformation is changing the way we think.” — Simeon Preston.</p>
+                    <div class="icons">
+                        <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+        <div class="toast-container position-absolute top-0 end-0 p-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <strong class="me-auto">{{ message.tags }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show all toasts
+        var toastElements = document.querySelectorAll('.toast');
+        toastElements.forEach(function(toast) {
+            var bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        });
+    </script>
+</body>
+</html>

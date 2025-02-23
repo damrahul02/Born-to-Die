@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{% static 'css/citizen__panel.css' %}" />
+    <title>Pay Passport Fees</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg customNav">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'citizen:index' %}">
+                <img src="{% static 'images/2.png' %}" alt="logo" class="navbar__logo" />
+            </a>
+            <a href="{% url 'citizen:citizen_panel' %}" class="btn btn-outline-light">Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Pay Your Passport Fees</h2>
+        
+        {% if messages %}
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if applications %}
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Your Passport Applications</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tracking Number</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for app in applications %}
+                                    <tr>
+                                        <td>{{ app.tracking_number }}</td>
+                                        <td>{{ app.name_en }}</td>
+                                        <td>{{ app.passport_type }}</td>
+                                        <td>
+                                            {% if app.payment_amount %}
+                                            ৳{{ app.payment_amount }}
+                                            {% else %}
+                                            Pending
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ app.payment_status }}</td>
+                                        <td>
+                                            {% if app.payment_status == 'pending' %}
+                                            <button class="btn btn-primary btn-sm" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#paymentModal"
+                                                    data-tracking="{{ app.tracking_number }}"
+                                                    data-amount="{{ app.passport_type|yesno:'5500,3500' }}">
+                                                Pay Now
+                                            </button>
+                                            {% else %}
+                                            <span class="badge bg-success">Paid</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="alert alert-info">
+                    You don't have any pending passport applications.
+                    <a href="{% url 'citizen:passport_application' %}" class="alert-link">Apply for a passport</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Payment Modal -->
+   <!-- Replace the existing payment modal with this -->
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">bKash Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                
+
+                <form id="paymentForm" action="{% url 'citizen:process_payment' 'placeholder' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="tracking_number" id="trackingNumber">
+                    <input type="hidden" name="amount" id="paymentAmount">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Your bKash Number</label>
+                        <input type="text" class="form-control" name="bkash_number" 
+                               pattern="\d{11}" maxlength="11" required>
+                        <small class="text-muted">Enter the bKash number you used for payment</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Transaction ID</label>
+                        <input type="text" class="form-control" name="transaction_id" required>
+                        <small class="text-muted">Enter the Transaction ID you received from bKash</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Submit Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+ 
+      document.addEventListener('DOMContentLoaded', function() {
+    const paymentModal = document.getElementById('paymentModal');
+    const paymentForm = document.getElementById('paymentForm');
+
+    paymentModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const tracking = button.getAttribute('data-tracking');
+        const amount = button.getAttribute('data-amount');
+        
+        document.getElementById('trackingNumber').value = tracking;
+        document.getElementById('paymentAmount').value = amount;
+        
+        // Update the form action URL
+        const newAction = paymentForm.action.replace('placeholder', tracking);
+        paymentForm.setAttribute('action', newAction);
+    });
+
+    // Add form validation
+    paymentForm.addEventListener('submit', function(event) {
+        const bkashNumber = document.querySelector('input[name="bkash_number"]').value;
+        const transactionId = document.querySelector('input[name="transaction_id"]').value;
+
+        if (!bkashNumber.match(/^\d{11}$/)) {
+            event.preventDefault();
+            alert('Please enter a valid bKash number (11 digits)');
+        }
+
+        if (!transactionId.trim()) {
+            event.preventDefault();
+            alert('Please enter the Transaction ID');
+        }
+    });
+});
+
+    </script>
+</body>
+</html> 

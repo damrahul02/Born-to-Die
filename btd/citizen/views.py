@@ -1438,12 +1438,13 @@ def update_vaccine(request):
         if 'search' in request.POST:
             application_id = request.POST.get('application_id')
             try:
-                # Search using application_id instead of registration_id
+                # Get baby details
                 searched_baby = Applicant.objects.get(
                     application_id=application_id,  
                     healthcare_id=volunteer.healthcare_id
                 )
                 
+                # Get vaccination schedule with vaccine names
                 vaccination_schedule = VaccinationSchedule.objects.filter(
                     application_id=application_id
                 ).order_by('scheduled_date')
@@ -1456,30 +1457,46 @@ def update_vaccine(request):
                     
             except Applicant.DoesNotExist:
                 messages.error(request, 'Baby not found or not registered in your healthcare center')
-        
+                return render(request, 'citizen/update_vaccine.html', {
+                    'volunteer': volunteer
+                })
+                
         elif 'update_status' in request.POST:
             schedule_id = request.POST.get('schedule_id')
             new_status = request.POST.get('status')
             
             try:
                 schedule = VaccinationSchedule.objects.get(id=schedule_id)
-                if schedule.status != 'Done':
-                    schedule.status = new_status
-                    if new_status == 'Done':
-                        schedule.volunteer_id = volunteer.id
-                    schedule.save()
-                    return JsonResponse({'status': 'success'})
-                else:
+
+                if schedule.status == 'Done':
                     return JsonResponse({
-                        'status': 'error', 
+                        'status': 'error',
                         'message': 'Vaccine has already been given'
                     })
+
+                # Update the status without date checking
+                schedule.status = new_status
+                if new_status == 'Done':
+                    schedule.volunteer_id = volunteer.id
+                    schedule.given_date = timezone.now()
+                schedule.save()
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Vaccination status updated successfully'
+                })
+
+            except VaccinationSchedule.DoesNotExist:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Schedule not found'
+                })
             except Exception as e:
                 return JsonResponse({
                     'status': 'error', 
                     'message': str(e)
                 })
-    
+
     context = {
         'volunteer': volunteer,
         'searched_baby': searched_baby,

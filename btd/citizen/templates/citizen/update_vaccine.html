@@ -138,9 +138,10 @@
                         {% for schedule in vaccination_schedule %}
                         <tr class="schedule-row {% if schedule.status == 'Done' %}completed{% endif %}">
                             <td>{{ schedule.vaccine_name }}</td>
-                            <td>{{ schedule.scheduled_date|date:'d M Y' }}</td>
+                            <td>{{ schedule.scheduled_date }}</td>
+
                             <td class="status-cell">{{ schedule.status }}</td>
-                            <td>{{ schedule.given_date|default:'-'|date:'d M Y' }}</td>
+                            <td></td>
                             <td>
                                 {% if schedule.status != 'Done' %}
                                 <select class="status-select" data-schedule-id="{{ schedule.id }}">
@@ -216,7 +217,7 @@ $(document).ready(function() {
                     if (newStatus === 'Done') {
                         row.addClass('completed');
                         row.find('.status-cell').text('Done');
-                        row.find('.given-date').text(today);
+                    
                         row.find('td:last').html('<span class="status-badge completed">Completed</span>');
                         showToast('Vaccine status updated successfully', 'success');
                     }
